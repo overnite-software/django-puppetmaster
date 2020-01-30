@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from bs4 import BeautifulSoup
 import requests
@@ -41,7 +42,7 @@ def parse_descendants(url, descendants):
             pass
 
 
-def puppet_view(request, route=None):
+def puppet_view(request, route):
     """
 
     Based on the route, this view fetches the generated html
@@ -52,13 +53,33 @@ def puppet_view(request, route=None):
     :return:
     """
 
-    mf = get_object_or_404(Puppet, route__icontains=route)
+    # Get list of available puppet routes and find the one that
+    # is being requested.
+    current_route = None
+    puppet_routes = Puppet.objects.all().values('route')
+    for puppet_route in puppet_routes:
+        puppet_route_str = puppet_route['route']
+        if route.startswith(puppet_route_str):
+            current_route = puppet_route_str
+            break
+
+    if not current_route:
+        raise Http404("Unable to locate route for application.")
+
+    mf = get_object_or_404(Puppet, route=current_route)
     req = requests.get(f"{mf.domain_url}{mf.html_file}")
     soup = BeautifulSoup(req.text, 'html.parser')
     parse_descendants(mf.domain_url, soup.head.contents)
     parse_descendants(mf.domain_url, soup.body.contents)
 
-    return render(request, "puppet.html", {"react_index": {"body": soup.body.prettify(), "head": soup.head.prettify()}})
+    return render(
+        request,
+        "puppet.html",
+        {"react_index": {
+            "body": soup.body.prettify(),
+            "head": soup.head.prettify()
+        }}
+    )
 
 
 def index(request):
