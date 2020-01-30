@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Welcome to your Suite</h1>
+<ul>
+    {% for micro_frontend in micro_frontends %}
+        <li><a href="{{ micro_frontend.get_absolute_url }}">{{ micro_frontend.get_absolute_url }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

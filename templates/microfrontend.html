@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_headers %}
+    {{ react_index.head|safe }}
+{% endblock %}
+{% block content %}
+    {{ react_index.body|safe }}
+{% endblock %}
