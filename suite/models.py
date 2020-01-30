@@ -31,3 +31,5 @@ class Puppet(models.Model):
 
     def get_absolute_url(self):
         return reverse("puppet", args=[self.route])
+
+

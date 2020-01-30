@@ -55,19 +55,19 @@ def puppet_view(request, route):
 
     # Get list of available puppet routes and find the one that
     # is being requested.
+
     current_route = None
     puppet_routes = Puppet.objects.all().values('route')
     for puppet_route in puppet_routes:
         puppet_route_str = puppet_route['route']
-        if route.startswith(puppet_route_str):
+        if route.find(puppet_route_str, 0, len(puppet_route_str)) >= 0:
             current_route = puppet_route_str
-            break
 
     if not current_route:
         raise Http404("Unable to locate route for application.")
 
     mf = get_object_or_404(Puppet, route=current_route)
-    req = requests.get(f"{mf.domain_url}{mf.html_file}")
+    req = requests.get(f"{mf.domain_url}/{mf.html_file}")
     soup = BeautifulSoup(req.text, 'html.parser')
     parse_descendants(mf.domain_url, soup.head.contents)
     parse_descendants(mf.domain_url, soup.body.contents)
