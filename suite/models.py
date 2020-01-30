@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 
 
-class MicroFrontend(models.Model):
+class Puppet(models.Model):
     """
 
         MicroFrontend settings for your React apps to be delivered

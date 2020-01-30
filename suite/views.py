@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from bs4 import BeautifulSoup
 import requests
 
-from suite.models import MicroFrontend
+from suite.models import Puppet
 
 
 def build_link(url, tag, type):
@@ -52,11 +52,12 @@ def microfront_view(request, route=None):
     :return:
     """
 
-    mf = get_object_or_404(MicroFrontend, route__icontains=route)
+    mf = get_object_or_404(Puppet, route__icontains=route)
     req = requests.get(f"{mf.domain_url}{mf.html_file}")
     soup = BeautifulSoup(req.text, 'html.parser')
     parse_descendants(mf.domain_url, soup.head.contents)
     parse_descendants(mf.domain_url, soup.body.contents)
+
     return render(request, "microfrontend.html", {"react_index": {"body": soup.body.prettify(), "head": soup.head.prettify()}})
 
 
@@ -67,4 +68,4 @@ def index(request):
     :return:
     """
 
-    return render(request, "index.html", {"micro_frontends": MicroFrontend.objects.all()})
+    return render(request, "index.html", {"micro_frontends": Puppet.objects.all()})
