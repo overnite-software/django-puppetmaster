@@ -30,4 +30,4 @@ class Puppet(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("microfrontend", args=[self.route])
+        return reverse("puppet", args=[self.route])

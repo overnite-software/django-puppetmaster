@@ -41,7 +41,7 @@ def parse_descendants(url, descendants):
             pass
 
 
-def microfront_view(request, route=None):
+def puppet_view(request, route=None):
     """
 
     Based on the route, this view fetches the generated html
@@ -58,7 +58,7 @@ def microfront_view(request, route=None):
     parse_descendants(mf.domain_url, soup.head.contents)
     parse_descendants(mf.domain_url, soup.body.contents)
 
-    return render(request, "microfrontend.html", {"react_index": {"body": soup.body.prettify(), "head": soup.head.prettify()}})
+    return render(request, "puppet.html", {"react_index": {"body": soup.body.prettify(), "head": soup.head.prettify()}})
 
 
 def index(request):
